@@ -6,8 +6,16 @@ services:
       context: .
     container_name: kripticcBackend
     ports:
-      - '3001:3001'
+      - '8000:8000'
     restart: always
     volumes:
       - ./:/BeameBackend
-    command: npm run dev
+  kripticc-db:
+    image: 'postgres:latest'
+    ports:
+      - '5432:5431'
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=dev
+      - POSTGRES_DB=kripticc-local-db
+    restart: unless-stopped
