@@ -1,7 +1,0 @@
-[development]
-address = "0.0.0.0"
-port = 8000
-#workers = [number_of_cpus * 2]
-log = "normal"
-#secret_key = [randomly generated at launch]
-#limits = { forms = 32768 }
