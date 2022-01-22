@@ -1,4 +1,5 @@
 mod routes;
+
 use rocket::routes;
 use crate::routes::{test, home};
 
@@ -10,6 +11,7 @@ async fn main() {
         .launch()
         .await;
 
+    // Ok(result)
     match result {
         Ok(result) => println!("app launched successfully {:?}", result),
         Err(error) => panic!("failed to launch with error {:?}", error),
