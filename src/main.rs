@@ -1,5 +1,8 @@
+extern crate diesel;
+
 mod routes;
 mod services;
+mod models;
 
 use crate::routes::home;
 use crate::services::users;
