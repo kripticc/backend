@@ -1,23 +1,23 @@
-use crate::models::user::User;
+use crate::models::user::insert_user;
+// use backend_rust::establish_connection;
 use rocket::post;
 use rocket::serde::{json::Json, Deserialize};
 
 #[derive(Deserialize)]
-pub struct NewUser<String> {
-    pub email_hash: String,
-    pub password_hash: String,
+pub struct NewUser<'a> {
+    pub email_hash: &'a str,
+    pub password_hash: &'a str,
 }
 #[post("/users", data = "<user>")]
-pub fn create_user(user: Json<NewUser<String>>) -> String {
-    let user = User {
-        id: 0,
-        email_hash: &*user.email_hash,
-        password_hash: &*user.password_hash,
-        user_name: "test_user_name",
-        profile_pic: "test/link/to/profile/pic",
-        bio: "Hi! I am a test user.",
-        created_at: Default::default(),
-        updated_at: Default::default(),
-    };
-    serde_json::to_string(&user).unwrap()
+pub fn create_user(user: Json<NewUser>) -> String {
+    // let connection = establish_connection();
+    let new_user = insert_user(
+        // &connection,
+        user.email_hash,
+        user.password_hash,
+        "test/link/to/profile/pic",
+        "Hi! I am a test user.",
+        "hi i am new user.".to_string(),
+    );
+    serde_json::to_string(&new_user).unwrap()
 }
