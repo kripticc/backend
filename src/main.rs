@@ -1,8 +1,9 @@
-#[macro_use] extern crate diesel;
+#[macro_use]
+extern crate diesel;
 
+mod models;
 mod routes;
 mod services;
-mod models;
 
 use crate::routes::home;
 use crate::services::users;

@@ -13,3 +13,4 @@ serde = "1.0.136"
 serde_json = "1.0"
 chrono = { version = "0.4", features = ["serde"] }
 uuid = { version = "0.8.2", features = ["serde", "v4"] }
+scrypt = { version = "0.8.1", features = ["simple"] }
