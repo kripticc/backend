@@ -4,6 +4,7 @@ use chrono::{NaiveDateTime, Utc};
 use diesel::RunQueryDsl;
 use rocket::post;
 use rocket::serde::{json::Json, Deserialize};
+use scrypt::password_hash::{PasswordHash, PasswordVerifier};
 use scrypt::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Scrypt,
@@ -12,6 +13,7 @@ use scrypt::{
 #[derive(Insertable, Deserialize)]
 #[table_name = "users"]
 pub struct InputUserData {
+    pub user_name: String,
     pub email_hash: String,
     pub password_hash: String,
 }
@@ -19,7 +21,7 @@ pub struct InputUserData {
 #[derive(Insertable, Deserialize, AsChangeset)]
 #[table_name = "users"]
 pub struct NewUser {
-    pub name: String,
+    pub user_name: String,
     pub salt: String,
     pub email_hash: String,
     pub password_hash: String,
@@ -33,19 +35,21 @@ pub struct NewUser {
 pub fn create_user(user: Json<InputUserData>) -> Result<String, String> {
     let connection = establish_connection();
     let salt = SaltString::generate(&mut OsRng).as_str().parse().unwrap();
-    // let password_hash = Scrypt
-    //     .hash_password(user.password_hash.as_ref(), &salt)?
-    //     .to_string();
-    // let email_hash = Scrypt
-    //     .hash_password(user.email_hash.as_ref(), &salt)?
-    //     .to_string();
+    let password_hash = Scrypt
+        .hash_password(user.password_hash.as_ref(), &salt)
+        .unwrap()
+        .to_string();
+    let email_hash = Scrypt
+        .hash_password(user.email_hash.as_ref(), &salt)
+        .unwrap()
+        .to_string();
     let dt = Utc::now();
     let timestamp: i64 = dt.timestamp();
     let new_user = NewUser {
-        name: "test_user_1".parse().unwrap(),
+        user_name: user.user_name.parse().unwrap(),
         salt,
-        email_hash: user.email_hash.parse().unwrap(),
-        password_hash: user.password_hash.parse().unwrap(),
+        email_hash,
+        password_hash: (password_hash).parse().unwrap(),
         profile_pic: "path/to/pic".parse().unwrap(),
         bio: "hey this is my test account!".parse().unwrap(),
         created_at: NaiveDateTime::from_timestamp(timestamp, 0),

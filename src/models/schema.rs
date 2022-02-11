@@ -1,7 +1,7 @@
 table! {
     users (id) {
         id -> Int4,
-        name -> Varchar,
+        user_name -> Varchar,
         salt -> Varchar,
         email_hash -> Varchar,
         password_hash -> Varchar,
