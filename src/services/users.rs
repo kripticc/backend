@@ -1,10 +1,9 @@
 use crate::models::schema::users;
 use backend_rust::establish_connection;
 use chrono::{NaiveDateTime, Utc};
-use diesel::RunQueryDsl;
-use rocket::post;
-use rocket::serde::{json::Json, Deserialize};
-use scrypt::password_hash::{PasswordHash, PasswordVerifier};
+use diesel::{QueryDsl, RunQueryDsl};
+use rocket::serde::{json::Json, Deserialize, Serialize};
+use rocket::{get, post};
 use scrypt::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Scrypt,
@@ -12,7 +11,7 @@ use scrypt::{
 
 #[derive(Insertable, Deserialize)]
 #[table_name = "users"]
-pub struct InputUserData {
+pub struct UserRegisterInput {
     pub user_name: String,
     pub email_hash: String,
     pub password_hash: String,
@@ -31,8 +30,21 @@ pub struct NewUser {
     pub updated_at: NaiveDateTime,
 }
 
+#[derive(Debug, Queryable, Deserialize, Serialize)]
+pub struct User {
+    pub id: i32,
+    pub user_name: String,
+    pub salt: String,
+    pub email_hash: String,
+    pub password_hash: String,
+    pub profile_pic: String,
+    pub bio: Option<String>,
+    pub created_at: NaiveDateTime,
+    pub updated_at: NaiveDateTime,
+}
+
 #[post("/users", format = "json", data = "<user>")]
-pub fn create_user(user: Json<InputUserData>) -> Result<String, String> {
+pub fn create_user(user: Json<UserRegisterInput>) -> Result<String, String> {
     let connection = establish_connection();
     let salt = SaltString::generate(&mut OsRng).as_str().parse().unwrap();
     let password_hash = Scrypt
@@ -61,4 +73,15 @@ pub fn create_user(user: Json<InputUserData>) -> Result<String, String> {
         .execute(&connection)
         .map_err(|_err| -> String { "Error when inserting".into() })
         .map(|_| "Successfully inserted!".into())
+}
+
+#[get("/user/<user_id>")]
+pub fn get_user(user_id: i32) -> Json<User> {
+    let connection = establish_connection();
+    let mut result = users::table
+        .find(user_id)
+        .load::<User>(&connection)
+        .expect("unable to fetch the user");
+
+    Json(result.remove(0))
 }

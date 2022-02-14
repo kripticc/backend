@@ -12,7 +12,10 @@ use rocket::routes;
 #[rocket::main]
 async fn main() {
     let result = rocket::build()
-        .mount("/", routes![home::get_home, users::create_user])
+        .mount(
+            "/",
+            routes![home::get_home, users::create_user, users::get_user],
+        )
         .launch()
         .await;
 
