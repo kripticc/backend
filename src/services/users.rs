@@ -2,6 +2,7 @@ use crate::models::schema::users;
 use backend_rust::establish_connection;
 use chrono::{NaiveDateTime, Utc};
 use diesel::{QueryDsl, RunQueryDsl};
+use either::*;
 use rocket::serde::{json::Json, Deserialize, Serialize};
 use rocket::{get, post};
 use scrypt::{
@@ -43,6 +44,10 @@ pub struct User {
     pub updated_at: NaiveDateTime,
 }
 
+pub struct Response {
+    pub message: String,
+}
+
 #[post("/users", format = "json", data = "<user>")]
 pub fn create_user(user: Json<UserRegisterInput>) -> Result<String, String> {
     let connection = establish_connection();
@@ -62,7 +67,7 @@ pub fn create_user(user: Json<UserRegisterInput>) -> Result<String, String> {
         salt,
         email_hash,
         password_hash: (password_hash).parse().unwrap(),
-        profile_pic: "path/to/pic".parse().unwrap(),
+        profile_pic: SaltString::generate(&mut OsRng).as_str().parse().unwrap(),
         bio: "hey this is my test account!".parse().unwrap(),
         created_at: NaiveDateTime::from_timestamp(timestamp, 0),
         updated_at: NaiveDateTime::from_timestamp(timestamp, 0),
@@ -76,12 +81,18 @@ pub fn create_user(user: Json<UserRegisterInput>) -> Result<String, String> {
 }
 
 #[get("/user/<user_id>")]
-pub fn get_user(user_id: i32) -> Json<User> {
+pub fn get_user(user_id: i32) -> Either<Json<&'static str>, Json<User>> {
     let connection = establish_connection();
-    let mut result = users::table
-        .find(user_id)
-        .load::<User>(&connection)
-        .expect("unable to fetch the user");
+    let result = users::table.find(user_id).load::<User>(&connection);
 
-    Json(result.remove(0))
+    match result {
+        Ok(mut result) => {
+            return if result.len() == 0 {
+                Left(Json("No user found"))
+            } else {
+                Right(Json(result.remove(0)))
+            }
+        }
+        Err(error) => panic!("failed to launch with error {:?}", error),
+    }
 }
