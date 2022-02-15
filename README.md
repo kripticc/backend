@@ -6,3 +6,7 @@ experimenting with rust at the backend
 `sudo docker-compose -f docker-compose.dev.yml build`
 ### Run the containers with the following:
 `sudo docker-compose -f docker-compose.dev.yml up`
+
+### Build and run simultaneously with the following:
+`sudo docker-compose -f docker-compose.dev.yml build && sudo docker-compose -f docker-compose.dev.yml up`
+
