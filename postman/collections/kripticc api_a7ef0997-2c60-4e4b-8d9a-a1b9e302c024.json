@@ -1,0 +1,151 @@
+{
+    "info": {
+        "_postman_id": "c4a7b58b-7442-4299-abb7-3cb893f450c6",
+        "name": "kripticc api",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Sample endpoint: Returns details about a particular user",
+            "id": "b2c008b9-8d4c-4e18-95ca-e6dbb1c3647e",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/user?user_name=Duis ipsum aute",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "user"
+                    ],
+                    "query": [
+                        {
+                            "key": "user_name",
+                            "value": "Duis ipsum aute",
+                            "description": "(Required) name of the user"
+                        }
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "id": "e7ad75dd-296f-4c84-94fe-b5f4e8467006",
+                    "name": "Sample response: Details about a user by ID",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "description": "Added as a part of security scheme: basic",
+                                "key": "Authorization",
+                                "value": "Basic <credentials>"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/user?user_name=Duis ipsum aute",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "user"
+                            ],
+                            "query": [
+                                {
+                                    "key": "user_name",
+                                    "value": "Duis ipsum aute"
+                                }
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "disabled": false,
+                            "description": "A link to the next page of responses",
+                            "key": "x-next",
+                            "value": "Duis ipsum aute"
+                        },
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "responseTime": null,
+                    "body": "{\n  \"user_name\": \"/3QF51z3/\",\n  \"email\": \"eu ipsum magna\",\n  \"password\": \"esse in\",\n  \"profile_pic\": \"voluptate eiusmod\",\n  \"salt\": \"Duis magna dolor\",\n  \"bio\": \"adipisicing laboris\",\n  \"created_at\": -3320350.0411016494,\n  \"updated_at\": false,\n  \"deleted_at\": false\n}"
+                },
+                {
+                    "id": "7be937e5-55e2-4750-8e85-56896bf41107",
+                    "name": "Unexpected error",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "description": "Added as a part of security scheme: basic",
+                                "key": "Authorization",
+                                "value": "Basic <credentials>"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/user?user_name=Duis ipsum aute",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "user"
+                            ],
+                            "query": [
+                                {
+                                    "key": "user_name",
+                                    "value": "Duis ipsum aute"
+                                }
+                            ]
+                        }
+                    },
+                    "status": "Internal Server Error",
+                    "code": 500,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ],
+                    "cookie": [],
+                    "responseTime": null,
+                    "body": "{\n  \"code\": 34887663,\n  \"message\": \"laboris et\"\n}"
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "basic",
+        "basic": [
+            {
+                "key": "username",
+                "value": "<Basic Auth Username>",
+                "type": "string"
+            },
+            {
+                "key": "password",
+                "value": "<Basic Auth Password>",
+                "type": "string"
+            }
+        ]
+    },
+    "variable": [
+        {
+            "id": "7feaf6d9-7626-42e0-a217-92b801813886",
+            "key": "baseUrl",
+            "value": "localhost:3000/v1",
+            "type": "string"
+        }
+    ]
+}
