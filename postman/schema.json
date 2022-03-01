@@ -1,148 +1,100 @@
-{
-  "openapi": "3.0.0",
-  "info": {
-    "version": "0.1",
-    "title": "user",
-    "license": {
-      "name": "AGPLv3.0"
-    }
-  },
-  "servers": [
-    {
-      "url": "localhost:3000/v1"
-    }
-  ],
-  "paths": {
-    "/user": {
-      "get": {
-        "summary": "Sample endpoint: Returns details about a particular user",
-        "operationId": "listUser",
-        "tags": [
-          "user"
-        ],
-        "parameters": [
-          {
-            "name": "user_name",
-            "in": "query",
-            "description": "name of the user",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Sample response: Details about a user by ID",
-            "headers": {
-              "x-next": {
-                "description": "A link to the next page of responses",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "User": {
-        "type": "object",
-        "required": [
-          "user_name",
-          "email",
-          "password",
-          "profile_pic",
-          "salt",
-          "bio",
-          "created_at",
-          "updated_at",
-          "deleted_at"
-        ],
-        "properties": {
-          "user_name": {
-            "type": "string",
-            "pattern": "/^[a-zA-Z0-9]+$/",
-            "minLength": 4,
-            "maxLength": 64
-          },
-          "email": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string",
-            "format": "password"
-          },
-          "profile_pic": {
-            "type": "string"
-          },
-          "salt": {
-            "type": "string"
-          },
-          "bio": {
-            "type": "string",
-            "nullable": true
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "deleted_at": {
-            "type": "string",
-            "format": "date-time"
-        }
-      },
-      "Error": {
-        "type": "object",
-        "required": [
-          "code",
-          "message"
-        ],
-        "properties": {
-          "code": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "securitySchemes": {
-      "BasicAuth": {
-        "type": "http",
-        "scheme": "basic"
-      }
-    }
-  },
-  "security": [
-    {
-      "BasicAuth": []
-    }
-  ]
-}
+---
+swagger: '2.0'
+info:
+  version: '0.1'
+  title: user
+  license:
+    name: AGPLv3.0
+servers:
+- url: localhost:3000/v1
+paths:
+  "/user":
+    get:
+      summary: " Returns details about a particular user"
+      operationId: listUser
+      tags:
+      - user
+      parameters:
+      - name: user_name
+        type: string
+        in: query
+        description: name of the user
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Sample response: Details about a user by ID'
+          headers:
+            x-next:
+              description: A link to the next page of responses
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/User"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+components:
+  schemas:
+    User:
+      type: object
+      required:
+      - user_name
+      - email
+      - password
+      - profile_pic
+      - salt
+      - bio
+      - created_at
+      - updated_at
+      - deleted_at
+      properties:
+        user_name:
+          type: string
+          pattern: "/^[a-zA-Z0-9]+$/"
+          minLength: 4
+          maxLength: 64
+        email:
+          type: string
+        password:
+          type: string
+          format: password
+        profile_pic:
+          type: string
+        salt:
+          type: string
+        bio:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+      Error:
+        type: object
+        required:
+        - code
+        - message
+        properties:
+          code:
+            type: integer
+            format: int32
+          message:
+            type: string
+    securitySchemes:
+      BasicAuth:
+        type: http
+        scheme: basic
+security:
+- BasicAuth: []
