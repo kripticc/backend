@@ -1,15 +1,6 @@
 version: '3.7'
 
 services:
-#  kripticc-backend:
-#    build:
-#      context: .
-#    container_name: kripticcBackend
-#    ports:
-#      - '8000:8000'
-#    restart: always
-#    volumes:
-#      - ./:/BeameBackend
   db:
     image: postgres
     restart: always
@@ -17,8 +8,3 @@ services:
       - '5432:5432'
     environment:
       POSTGRES_PASSWORD: example
-#  adminer:
-#    image: adminer
-#    restart: always
-#    ports:
-#      - '8080:8080'
