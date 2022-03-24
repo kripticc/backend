@@ -1,6 +1,5 @@
 table! {
-    users (id) {
-        id -> Int4,
+    users (user_name) {
         user_name -> Varchar,
         salt -> Varchar,
         email_hash -> Varchar,
@@ -9,5 +8,6 @@ table! {
         bio -> Nullable<Text>,
         created_at -> Timestamp,
         updated_at -> Timestamp,
+        deleted_at -> Timestamp,
     }
 }
