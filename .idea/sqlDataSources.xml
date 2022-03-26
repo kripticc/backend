@@ -10,20 +10,4 @@
       </scope>
     </mapping>
   </component>
-  <component name="SqlDataSourceStorage">
-    <option name="dataSources">
-      <list>
-        <State>
-          <option name="id" value="45c61f80-b3c4-4a94-9e39-17e8a039b1e2" />
-          <option name="name" value="kripticc-local-db (DDL)" />
-          <option name="languageId" value="PostgreSQL" />
-          <option name="urls">
-            <array>
-              <option value="file://$PROJECT_DIR$/migrations" />
-            </array>
-          </option>
-        </State>
-      </list>
-    </option>
-  </component>
 </project>
