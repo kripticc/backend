@@ -1,6 +1,6 @@
 [package]
-name = "juniper-example"
-version = "1.0.0"
+name = "kirpticc-api"
+version = "0.0.1"
 edition = "2021"
 
 [dependencies]
