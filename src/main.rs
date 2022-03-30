@@ -1,39 +1,57 @@
-mod errors;
-mod handlers;
-mod models;
+//! Actix Web juniper example
+//!
+//! A simple example integrating juniper in Actix Web
+
+use std::{io, sync::Arc};
+
+use actix_cors::Cors;
+use actix_web::{
+    get, middleware, route,
+    web::{self, Data},
+    App, HttpResponse, HttpServer, Responder,
+};
+use actix_web_lab::respond::Html;
+use juniper::http::{graphiql::graphiql_source, GraphQLRequest};
+
 mod schema;
 
-#[macro_use]
-extern crate diesel;
+use crate::schema::{create_schema, Schema};
 
-use ::r2d2::Pool;
-use actix_web::{dev::ServiceRequest, web, App, Error, HttpServer};
-use diesel::prelude::*;
-use diesel::r2d2::{self, ConnectionManager};
+/// GraphiQL playground UI
+#[get("/graphiql")]
+async fn graphql_playground() -> impl Responder {
+    Html(graphiql_source("/graphql", None))
+}
 
-#[actix_rt::main]
-async fn main() -> std::io::Result<()> {
-    dotenv::dotenv().ok();
-    std::env::set_var("RUST_LOG", "actix_web=debug");
-    let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+/// GraphQL endpoint
+#[route("/graphql", method = "GET", method = "POST")]
+async fn graphql(st: web::Data<Schema>, data: web::Json<GraphQLRequest>) -> impl Responder {
+    let user = data.execute(&st, &()).await;
+    HttpResponse::Ok().json(user)
+}
 
-    // create db connection pool
-    let manager = ConnectionManager::<PgConnection>::new(database_url);
-    pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
-    let pool: Pool = r2d2::Pool::builder()
-        .build(manager)
-        .expect("Failed to create pool.");
+#[actix_web::main]
+async fn main() -> io::Result<()> {
+    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
-    // Start http server
+    // Create Juniper schema
+    let schema = Arc::new(create_schema());
+
+    log::info!("starting HTTP server on port 8080");
+    log::info!("GraphiQL playground: http://localhost:8080/graphiql");
+
+    // Start HTTP server
     HttpServer::new(move || {
         App::new()
-            .data(pool.clone())
-            .route("/user", web::get().to(handlers::get_users))
-            .route("/user/{id}", web::get().to(handlers::get_user_by_id))
-            .route("/user", web::post().to(handlers::add_user))
-            .route("/user/{id}", web::delete().to(handlers::delete_user))
+            .app_data(Data::from(schema.clone()))
+            .service(graphql)
+            .service(graphql_playground)
+            // the graphiql UI requires CORS to be enabled
+            .wrap(Cors::permissive())
+            .wrap(middleware::Logger::default())
     })
-    .bind("127.0.0.1:8080")?
+    .workers(2)
+    .bind(("127.0.0.1", 8080))?
     .run()
     .await
 }
